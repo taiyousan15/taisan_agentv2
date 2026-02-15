@@ -1,0 +1,6 @@
+objective: "全リポジトリにシンボリックリンク作成"
+non_goals: []
+inputs: [".claude", ".mcp.json"]
+constraints: ["既存ファイルはスキップ"]
+definition_of_done: ["シンボリックリンク作成完了"]
+allowed_deviations_policy: "none"
