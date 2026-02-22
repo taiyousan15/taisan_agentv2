@@ -22,6 +22,7 @@
     "test:coverage": "jest --coverage",
     "test:watch": "jest --watch",
     "test:guards": "jest --testPathPattern=workflow-fidelity-guard --runInBand",
+    "test:defense": "jest --testPathPattern=defense-layers --runInBand",
     "workflow:lint": "node .claude/hooks/definition-lint-gate.js lint-all",
     "guard:verify": "npm run workflow:lint && npm run test:guards",
     "check:unicode": "node scripts/check-hidden-unicode.js",
@@ -91,7 +92,11 @@
     "metrics:aggregate": "node .claude/hooks/metrics-aggregator.js",
     "metrics:report": "node .claude/hooks/generate-metrics-report.js",
     "metrics:report:7d": "node .claude/hooks/generate-metrics-report.js --days=7",
-    "metrics:report:30d": "node .claude/hooks/generate-metrics-report.js --days=30"
+    "metrics:report:30d": "node .claude/hooks/generate-metrics-report.js --days=30",
+    "qdrant:up": "docker compose -f docker-compose.qdrant.yml up -d",
+    "qdrant:down": "docker compose -f docker-compose.qdrant.yml down",
+    "qdrant:health": "npx ts-node -e \"const {MemoryConnectionManager} = require('./src/proxy-mcp/memory/connection-manager'); (async () => { const m = MemoryConnectionManager.getInstance(); await m.initialize(); console.log('Qdrant connected:', m.isQdrantConnected()); const stats = m.getMemory().getStats(); console.log('Memory stats:', stats); await m.shutdown(); })()\"",
+    "qdrant:test": "npx ts-node src/proxy-mcp/memory/test-connection.ts"
   },
   "keywords": [
     "ai",
@@ -105,9 +110,11 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.0",
+    "@qdrant/js-client-rest": "^1.12.0",
     "@types/supertest": "^6.0.3",
     "dotenv": "^16.3.1",
     "express": "^5.2.1",
+    "google-auth-system": "github:taiyousan15/google-auth-system#v1.1.0",
     "kuromoji": "^0.1.2",
     "supertest": "^7.1.4",
     "yaml": "^2.3.4"

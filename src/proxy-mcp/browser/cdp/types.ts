@@ -13,6 +13,8 @@ export interface CDPConfig {
   timeout: number;
   /** Max retry attempts (default: 3) */
   maxRetries: number;
+  /** Enable stealth mode (Patchright + fingerprint) */
+  stealth?: boolean;
 }
 
 export interface CDPConnection {

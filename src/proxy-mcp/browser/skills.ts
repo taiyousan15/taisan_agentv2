@@ -42,7 +42,7 @@ import {
 } from './pipeline-tabs-skillize';
 
 /** Backend type for web skills */
-export type WebBackend = 'default' | 'cdp';
+export type WebBackend = 'default' | 'cdp' | 'cdp-auth' | 'cdp-stealth';
 
 /**
  * web.read_url - Read URL and summarize
@@ -72,8 +72,8 @@ export async function readUrl(
   const maxLength = options?.maxLength || 50000;
 
   // Use CDP backend if specified
-  if (backend === 'cdp') {
-    return readUrlViaCDPWithMemory(url, namespace, maxLength);
+  if (backend === 'cdp' || backend === 'cdp-stealth') {
+    return readUrlViaCDPWithMemory(url, namespace, maxLength, backend === 'cdp-stealth');
   }
 
   try {
@@ -206,8 +206,8 @@ export async function extractLinks(
   const filter = options?.filter || 'all';
 
   // Use CDP backend if specified
-  if (backend === 'cdp') {
-    return extractLinksViaCDPWithMemory(url, namespace, filter);
+  if (backend === 'cdp' || backend === 'cdp-stealth') {
+    return extractLinksViaCDPWithMemory(url, namespace, filter, backend === 'cdp-stealth');
   }
 
   try {
@@ -346,8 +346,8 @@ export async function captureDomMap(
   const namespace = options?.namespace || 'short-term';
 
   // Use CDP backend if specified
-  if (backend === 'cdp') {
-    return captureDomMapViaCDPWithMemory(url, namespace);
+  if (backend === 'cdp' || backend === 'cdp-stealth') {
+    return captureDomMapViaCDPWithMemory(url, namespace, backend === 'cdp-stealth');
   }
 
   try {
@@ -489,9 +489,10 @@ function generateSummary(title: string, content: string, url: string): string {
 async function readUrlViaCDPWithMemory(
   url: string,
   namespace: MemoryNamespace,
-  maxLength: number
+  maxLength: number,
+  useStealth: boolean = false
 ): Promise<WebSkillResult> {
-  const result = await readUrlViaCDP(url);
+  const result = await readUrlViaCDP(url, { stealth: useStealth });
 
   if (!result.success) {
     if (result.requireHuman) {
@@ -521,11 +522,11 @@ async function readUrlViaCDPWithMemory(
       title: pageData.title,
       content,
       fetchedAt: new Date().toISOString(),
-      backend: 'cdp',
+      backend: useStealth ? 'cdp-stealth' : 'cdp',
     }),
     namespace,
     {
-      tags: ['web', 'page-content', new URL(url).hostname, 'cdp'],
+      tags: ['web', 'page-content', new URL(url).hostname, useStealth ? 'cdp-stealth' : 'cdp'],
       source: 'web.read_url',
     }
   );
@@ -548,8 +549,8 @@ async function readUrlViaCDPWithMemory(
       url: pageData.url,
       title: pageData.title,
       contentLength: content.length,
-      backend: 'cdp',
-      message: `Page loaded via CDP. Use memory_search("${memResult.referenceId}") for full content.`,
+      backend: useStealth ? 'cdp-stealth' : 'cdp',
+      message: `Page loaded via ${useStealth ? 'CDP (stealth)' : 'CDP'}. Use memory_search("${memResult.referenceId}") for full content.`,
     },
   };
 }
@@ -560,9 +561,10 @@ async function readUrlViaCDPWithMemory(
 async function extractLinksViaCDPWithMemory(
   url: string,
   namespace: MemoryNamespace,
-  filter: 'internal' | 'external' | 'all'
+  filter: 'internal' | 'external' | 'all',
+  useStealth: boolean = false
 ): Promise<WebSkillResult> {
-  const result = await extractLinksViaCDP(url);
+  const result = await extractLinksViaCDP(url, { stealth: useStealth });
 
   if (!result.success) {
     if (result.requireHuman) {
@@ -612,11 +614,11 @@ async function extractLinksViaCDPWithMemory(
       filter,
       links: filteredLinks,
       extractedAt: new Date().toISOString(),
-      backend: 'cdp',
+      backend: useStealth ? 'cdp-stealth' : 'cdp',
     }),
     namespace,
     {
-      tags: ['web', 'links', baseHost, 'cdp'],
+      tags: ['web', 'links', baseHost, useStealth ? 'cdp-stealth' : 'cdp'],
       source: 'web.extract_links',
     }
   );
@@ -630,7 +632,8 @@ async function extractLinksViaCDPWithMemory(
 
   // Summary with top 5 links
   const topLinks = filteredLinks.slice(0, 5).map((l) => `- ${l.text || l.href}`);
-  const summary = `Extracted ${filteredLinks.length} ${filter} links from ${baseHost} (CDP).\nTop links:\n${topLinks.join('\n')}${filteredLinks.length > 5 ? '\n...' : ''}`;
+  const backendLabel = useStealth ? 'CDP (stealth)' : 'CDP';
+  const summary = `Extracted ${filteredLinks.length} ${filter} links from ${baseHost} (${backendLabel}).\nTop links:\n${topLinks.join('\n')}${filteredLinks.length > 5 ? '\n...' : ''}`;
 
   return {
     success: true,
@@ -641,7 +644,7 @@ async function extractLinksViaCDPWithMemory(
       url: linkData.url,
       linkCount: filteredLinks.length,
       filter,
-      backend: 'cdp',
+      backend: useStealth ? 'cdp-stealth' : 'cdp',
       message: `Use memory_search("${memResult.referenceId}") for full link list.`,
     },
   };
@@ -652,9 +655,10 @@ async function extractLinksViaCDPWithMemory(
  */
 async function captureDomMapViaCDPWithMemory(
   url: string,
-  namespace: MemoryNamespace
+  namespace: MemoryNamespace,
+  useStealth: boolean = false
 ): Promise<WebSkillResult> {
-  const result = await captureDOMMapViaCDP(url);
+  const result = await captureDOMMapViaCDP(url, { stealth: useStealth });
 
   if (!result.success) {
     if (result.requireHuman) {
@@ -684,11 +688,11 @@ async function captureDomMapViaCDPWithMemory(
       elements: domData.elements,
       totalElements: domData.totalElements,
       capturedAt: new Date().toISOString(),
-      backend: 'cdp',
+      backend: useStealth ? 'cdp-stealth' : 'cdp',
     }),
     namespace,
     {
-      tags: ['web', 'dom-map', new URL(url).hostname, 'cdp'],
+      tags: ['web', 'dom-map', new URL(url).hostname, useStealth ? 'cdp-stealth' : 'cdp'],
       source: 'web.capture_dom_map',
     }
   );
@@ -712,7 +716,8 @@ async function captureDomMapViaCDPWithMemory(
   };
   countTags(domData.elements);
 
-  const summary = `DOM map for ${domData.title || url} (CDP):\n${Object.entries(tagCounts)
+  const backendLabel = useStealth ? 'CDP (stealth)' : 'CDP';
+  const summary = `DOM map for ${domData.title || url} (${backendLabel}):\n${Object.entries(tagCounts)
     .slice(0, 10)
     .map(([tag, count]) => `- ${tag}: ${count}`)
     .join('\n')}${Object.keys(tagCounts).length > 10 ? '\n...' : ''}`;
@@ -726,7 +731,7 @@ async function captureDomMapViaCDPWithMemory(
       url: domData.url,
       title: domData.title,
       totalElements: domData.totalElements,
-      backend: 'cdp',
+      backend: useStealth ? 'cdp-stealth' : 'cdp',
       message: `Use memory_search("${memResult.referenceId}") for full DOM map.`,
     },
   };

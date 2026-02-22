@@ -2,8 +2,8 @@
 
 > **CRITICAL**: 次のセッションは必ずこのファイルを読んでから作業を開始すること
 
-**最終更新**: 2026-02-15T16:13:26.484Z
-**作業ディレクトリ**: /Users/matsumototoshihiko/taisun_agent
+**最終更新**: 2026-02-21T08:44:01.086Z
+**作業ディレクトリ**: /Users/matsumototoshihiko/Desktop/開発2026/taisun_agentv2
 
 ## 既存スクリプト（MUST READ）
 
@@ -14,14 +14,15 @@
 ```
 
 - `agent_os/runner.py` (7.0KB, 2026/2/8 22:17:24)
-- `dist/scripts/run-benchmarks.js` (9.5KB, 2026/2/16 1:13:10)
+- `dist/scripts/run-benchmarks.js` (9.5KB, 2026/2/16 6:50:48)
 - `generate_10_slides.py` (2.3KB, 2026/2/13 18:25:20)
 - `generate_full_guide.py` (5.0KB, 2026/2/13 18:25:20)
 - `generate_install_slides.py` (2.7KB, 2026/2/13 18:25:20)
 - `scripts/generate-release-approval.sh` (11.4KB, 2026/2/16 0:18:16)
+- `scripts/generate_comic_pdf.py` (21.9KB, 2026/2/16 7:22:02)
+- `scripts/generate_complete_comic_pdf.py` (53.0KB, 2026/2/16 7:22:02)
+- `scripts/generate_detailed_comic_pdf.py` (34.0KB, 2026/2/16 7:22:02)
 - `scripts/ollama-process-transcript.sh` (6.2KB, 2026/2/14 19:50:36)
-- `scripts/text_preprocessor.py` (11.9KB, 2026/2/14 23:20:46)
-- `tests/test_runner_retry_stop.py` (1.9KB, 2026/2/8 22:17:25)
 
 ## ワークフロー定義
 

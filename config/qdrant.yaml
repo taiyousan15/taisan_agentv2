@@ -1,0 +1,17 @@
+# Qdrant server configuration
+# Referenced by docker-compose.qdrant.yml
+
+log_level: INFO
+
+storage:
+  storage_path: /qdrant/storage
+  snapshots_path: /qdrant/storage/snapshots
+  optimizers:
+    default_segment_number: 2
+    memmap_threshold_mb: 100
+
+service:
+  host: 0.0.0.0
+  http_port: 6333
+  grpc_port: 6334
+  enable_tls: false

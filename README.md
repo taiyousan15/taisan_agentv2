@@ -12,6 +12,40 @@
 
 ---
 
+> **2026-02-22: v2.25.0 Hook Advisory-only化 + AGENTS.md 自己改善ループ**
+>
+> ### 多人数共有システム対応 & 自己改善ループ
+>
+> | 変更 | 内容 |
+> |------|------|
+> | Hook Advisory-only化 | `deviation-approval-guard` / `agent-enforcement-guard` / `definition-lint-gate` をブロック→警告のみに変更（exit 2 → exit 0） |
+> | 対象外（維持） | `unified-guard`: `rm -rf /` 等の危険コマンドは引き続きブロック |
+> | AGENTS.md 新設 | セッション横断の自己改善ログ。全セッションに自動ロード |
+> | /learn コマンド | 非自明な解決策を `docs/mistakes-log.md` + `AGENTS.md` に自動記録 |
+> | CLAUDE.md 更新 | AGENTS.md参照・Hook安全方針・MCP上限（10本以下）を追記 |
+>
+> #### AGENTS.md の使い方
+>
+> プロジェクトルートの `AGENTS.md` を毎セッション参照し、過去の教訓を引き継げます。
+>
+> ```bash
+> # 教訓を記録する
+> /learn   # 非自明な解決後に実行 → docs/mistakes-log.md + AGENTS.md に追記
+> ```
+>
+> #### Hook 安全方針（共有システム）
+>
+> | Hook | 動作 |
+> |------|------|
+> | deviation-approval-guard | 警告のみ（ブロックしない） |
+> | agent-enforcement-guard | 警告のみ（ブロックしない） |
+> | definition-lint-gate | 警告のみ（ブロックしない） |
+> | unified-guard | `rm -rf /` 等のみブロック（セキュリティ維持） |
+>
+> 個人でブロックが必要な場合は `~/.claude/settings.json`（ユーザーレベル）に設定してください。
+>
+> ---
+>
 > **2026-02-16: v2.24.0 Bootstrap Safe Mode + インストール/アップデート手順整備**
 >
 > ### Bootstrap Safe Mode（Hook安全起動）

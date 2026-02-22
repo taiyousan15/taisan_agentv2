@@ -38,11 +38,20 @@ export async function isCDPPortOpen(port: number = 9222): Promise<boolean> {
 
 /**
  * Connect to existing Chrome via CDP
+ *
+ * @param config - CDP configuration
+ * @param config.stealth - Enable stealth mode (Patchright + fingerprint)
  */
 export async function connectCDP(
   config: Partial<CDPConfig> = {}
 ): Promise<CDPConnection> {
   const fullConfig = { ...DEFAULT_CDP_CONFIG, ...config };
+
+  // Use stealth mode if requested
+  if (fullConfig.stealth) {
+    const { connectStealthCDP } = await import('../stealth');
+    return connectStealthCDP(config);
+  }
 
   // Return cached connection if still valid
   if (cachedConnection?.isConnected) {
@@ -144,4 +153,38 @@ export async function disconnectCDP(): Promise<void> {
  */
 export function clearConnectionCache(): void {
   cachedConnection = null;
+}
+
+/**
+ * Connect to Chrome via CDP with Google Auth
+ * Uses GoogleAuthBridge to ensure authenticated session
+ */
+export async function connectCDPWithAuth(
+  config: Partial<CDPConfig> = {},
+  authConfig?: Partial<import('../auth/types').AuthConfig>
+): Promise<CDPConnection> {
+  const { GoogleAuthBridge } = await import('../auth');
+
+  const bridge = new GoogleAuthBridge(authConfig);
+  const authResult = await bridge.authenticate();
+
+  if (!authResult.success) {
+    throw new Error(
+      `Google Auth failed (level ${authResult.level}): ${authResult.error}`
+    );
+  }
+
+  // Connect via CDP with authenticated session
+  const connection = await connectCDP(config);
+  return connection;
+}
+
+/**
+ * Re-export stealth CDP connection for convenience
+ */
+export async function connectStealthCDP(
+  config?: Partial<CDPConfig>
+): Promise<CDPConnection> {
+  const { connectStealthCDP: connectStealth } = await import('../stealth');
+  return connectStealth(config);
 }
