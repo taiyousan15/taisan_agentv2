@@ -95,3 +95,6 @@ google-auth-system/
 
 # Large binary files (GitHub 100MB limit)
 完成版.pdf
+
+# Claude Code worktrees (isolation: worktree が作成する一時ブランチ)
+.claude/worktrees/

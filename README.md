@@ -12,6 +12,53 @@
 
 ---
 
+> **2026-02-28: v2.26.0 Claude Code v2.1.63対応 — `isolation: worktree` + `/batch` スキル**
+>
+> ### 大規模並列エージェント実行 & worktree完全分離
+>
+> | 変更 | 内容 |
+> |------|------|
+> | `isolation: worktree` 追加 | コード変更系16エージェントのfrontmatterに追加。並列実行時のファイル競合を物理的に防止 |
+> | 対象エージェント（16本） | bug-fixer, refactor-specialist, feature-builder, implementation-assistant, migration-developer, test-generator, script-writer, api-developer, backend-developer, frontend-developer, database-developer, security-scanner, api-designer, database-designer, sub-implementer, sub-test-runner-fixer |
+> | `/batch` スキル追加 | 数十のエージェントがgit worktreeで独立作業 → テスト → PR作成を自動化 |
+> | `.gitignore` 更新 | `.claude/worktrees/` を追加（worktree作業ブランチの除外） |
+> | AGENTS.md 更新 | isolation: worktree の教訓・対象エージェント一覧を追記 |
+>
+> #### `isolation: worktree` とは
+>
+> Claude Code v2.1.63で追加されたエージェントフロントマターのオプション。
+> コード変更系エージェントを起動すると、専用のgit worktreeが自動作成され、
+> 他のエージェントのファイル変更と物理的に分離されます。
+>
+> ```yaml
+> # .claude/agents/bug-fixer.md（例）
+> ---
+> name: bug-fixer
+> model: sonnet
+> isolation: worktree   # ← これを追加
+> ---
+> ```
+>
+> #### `/batch` スキルの使い方
+>
+> ```bash
+> # フレームワーク移行
+> /batch migrate src/ from Solid to React
+>
+> # TypeScript strict型の一括追加
+> /batch add TypeScript strict types to src/
+>
+> # テストの一括追加
+> /batch add unit tests to src/utils/
+>
+> # lint修正
+> /batch fix ESLint errors in src/
+> ```
+>
+> > **注意**: `/batch` 実行前はMCPサーバーを5台以下に絞ること（コンテキスト保護）
+>
+> ---
+>
 > **2026-02-22: v2.25.0 Hook Advisory-only化 + AGENTS.md 自己改善ループ**
 >
 > ### 多人数共有システム対応 & 自己改善ループ

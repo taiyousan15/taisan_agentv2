@@ -2,7 +2,25 @@
 
 > **CRITICAL**: 次のセッションは必ずこのファイルを読んでから作業を開始すること
 
-**最終更新**: 2026-02-28T00:00:00.000Z
+**最終更新**: 2026-02-28（v2.26.0リリース）
+
+## 直近の作業ログ（2026-02-28）
+
+### v2.26.0 — Claude Code v2.1.63対応
+
+#### 実施内容
+1. **`isolation: worktree` 追加** — 16のコード変更系エージェントのfrontmatterに追加
+   - 対象: bug-fixer, refactor-specialist, feature-builder, implementation-assistant, migration-developer, test-generator, script-writer, api-developer, backend-developer, frontend-developer, database-developer, security-scanner, api-designer, database-designer, sub-implementer, sub-test-runner-fixer
+   - `.gitignore` に `.claude/worktrees/` を追記
+2. **`/batch` スキル追加** — `.claude/skills/batch/SKILL.md` 新規作成
+   - inode共有のため taisun_agent / taisun_agentv2 両方に反映
+3. **AGENTS.md 更新** — isolation: worktree の教訓と対象エージェント一覧を追記
+4. **README.md 更新** — v2.26.0セクション追加
+
+#### 参考: X投稿
+@__SatoshiSsSs__ の Claude Code v2.1.63分析投稿を参照して実装
+
+**最終更新（元）**: 2026-02-28T13:16:27.191Z
 **作業ディレクトリ**: /Users/matsumototoshihiko/Desktop/開発2026/taisun_agentv2
 
 ## 既存スクリプト（MUST READ）
@@ -47,27 +65,6 @@
 2. **「シンプルにする」と称して異なる実装** - 絶対禁止
 3. **指定比率を無視した要約** - 絶対禁止
 4. **スキル指示を無視した手動実装** - 絶対禁止
-
-## 最終作業内容（2026-02-28）
-
-### 完了タスク
-
-**intelligence-research スキル X_WATCH_ACCOUNTS 更新**
-
-340件のX監視アカウントを高エンゲージメント基準でフィルタリング・更新。
-両ファイルを同期済み:
-- `~/.claude/skills/intelligence-research/SKILL.md` （インストール済みスキル）
-- `taisun_agentv2/intelligence-research-skill.md` （ソースファイル）
-
-| セクション | 削除 | 追加 |
-|-----------|------|------|
-| AI Coding (EN) | @Sentdex, @abacaj, @alexalbert__, @gdb, @miramurati, @mckayW | @_philschmid, @mervenoyann, @yoheinakajima, @nutlope, @abidlabs, @heyBarsee |
-| AI Research (EN) | @ilyasut, @goodfellow_ian, @_jasonwei, @dustinvtran | @_akhaliq, @AnimeshGarg, @bindureddy, @IntuitMachine |
-| AI Labs (EN) | @CohereForAI, @togethercompute, @fireworks_ai | @runwayml, @stabilityai, @ElevenLabsio |
-| AI News (EN) | @paulg, @benediktstroebl, @shawwn, @quoclev | @StanfordHAI, @TechCrunch, @GoogleAI, @businessinsider |
-| AI News (JP) | @keio_sdm, @waseda_cs, @UT_Komaba, @titech_official, @nagoya_univ | @nikkei_xtech, @CNET_Japan, @engadget_japan, @itmedia_enterprise, @watch_impress |
-
-**コミット**: `b52c269` → プッシュ済み（main）
 
 ---
 

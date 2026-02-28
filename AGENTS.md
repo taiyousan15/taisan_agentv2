@@ -30,6 +30,8 @@
 - **Sub-agent Persistent Memory**: エージェント frontmatter に `memory: project` / `memory: user` を追加するとセッション横断で記憶が蓄積される。保存先: `.claude/agent-memory/<name>/memory.md` (project) or `~/.claude/agent-memory/<name>/memory.md` (user)
 - **モデルエイリアス**: フロントマターは `claude-3-5-sonnet-20241022` ではなく `sonnet` / `haiku` / `opus` を使う（バージョン固定より最新追従が推奨）
 - **taisun_agent と taisun_agentv2 の `.claude/agents/`**: inode 同一 = 共有ディレクトリ。片方の変更が両方に反映される
+- **`isolation: worktree`**: コード変更系エージェントのfrontmatterに追加するとgit worktreeで完全分離。並列実行時のファイル競合を物理的に防止。`.claude/worktrees/`を`.gitignore`に追加必須（v2.1.63〜）
+- **`isolation: worktree` 対象エージェント (16本)**: bug-fixer, refactor-specialist, feature-builder, implementation-assistant, migration-developer, test-generator, script-writer, api-developer, backend-developer, frontend-developer, database-developer, security-scanner, api-designer, database-designer, sub-implementer, sub-test-runner-fixer
 
 ---
 
