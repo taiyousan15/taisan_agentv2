@@ -12,6 +12,50 @@
 
 ---
 
+> **2026-03-04: v2.31.0 SDD スキル Ollama最適化 + setup-sdd.sh 追加**
+>
+> ### SDD 13スキルをOllamaローカルモデルに最適化
+>
+> | 変更 | 内容 |
+> |------|------|
+> | SDD 推論系スキル（5本）| sdd-adr / sdd-threat / sdd-design / sdd-req100 / sdd-full → `model: ollama-deepseek-r1`（deepseek-r1:70b）に変更 |
+> | SDD 構造化系スキル（8本）| sdd-context / sdd-tasks / sdd-slo / sdd-guardrails / sdd-runbook / sdd-glossary / sdd-stakeholder / sdd-event-storming → `model: ollama-qwen25-72b`（qwen2.5:72b-instruct-q8_0）に変更 |
+> | setup-sdd.sh 追加 | 3プラン選択式（MAX/Ollama/OpenRouter）対話型セットアップスクリプト |
+> | litellm-config.yaml v2.0 | OpenRouter/Groq/Ollama 70B モデル追加、Ollamaフォールバック設定 |
+>
+> #### setup-sdd.sh の使い方
+>
+> ```bash
+> # 対話式でプランを選べます（Claude Code のチャットに貼り付けて実行）
+> bash ~/taisun_agent/scripts/setup-sdd.sh
+>
+> # 完了後
+> source ~/.zshrc
+> ```
+>
+> | # | プラン | モデル | 対象 |
+> |---|--------|--------|------|
+> | 1 | Claude MAX/Pro | claude-opus / claude-sonnet | MAX $200プラン加入済みの方 |
+> | 2 | **Ollama ローカル（推奨）** | deepseek-r1:70b / qwen2.5:72b | M1/M2/M3/M4 Mac（32GB以上） |
+> | 3 | OpenRouter 格安API | deepseek-chat | どのマシンでも |
+>
+> #### SDD スキル一覧（/sdd-* コマンド）
+>
+> ```
+> /sdd-full <spec-slug>        ← 要件定義〜設計まで一括実行（最もよく使う）
+> /sdd-req100 <spec-slug>      ← EARS準拠 要件定義書作成
+> /sdd-design <spec-slug>      ← アーキテクチャ設計書作成
+> /sdd-adr <title> <spec-slug> ← 技術決定記録（ADR）作成
+> /sdd-context <spec-slug>     ← ビジネスコンテキスト整合（Amazon PR-FAQ）
+> /sdd-tasks <spec-slug>       ← 実装タスク分解
+> /sdd-slo <spec-slug>         ← SLO/SLA定義
+> /sdd-threat <spec-slug>      ← STRIDE脅威分析
+> /sdd-guardrails <spec-slug>  ← セキュリティガードレール
+> /sdd-runbook <spec-slug>     ← 運用Runbook作成
+> ```
+>
+> ---
+
 > **2026-02-28: v2.26.0 Claude Code v2.1.63対応 — `isolation: worktree` + `/batch` スキル**
 >
 > ### 大規模並列エージェント実行 & worktree完全分離

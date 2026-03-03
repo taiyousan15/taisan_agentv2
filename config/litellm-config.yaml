@@ -1,4 +1,4 @@
-# LiteLLM Proxy Configuration - LLM Auto-Switching System v1.0
+# LiteLLM Proxy Configuration - LLM Auto-Switching System v2.0（SDD Ollama 統合）
 
 model_list:
   - model_name: claude-opus
@@ -43,18 +43,85 @@ model_list:
       api_key: os.environ/OPENROUTER_API_KEY
       max_tokens: 4096
 
+  # ── OpenRouter経由 Claude（Anthropic直接より安い） ──
+  - model_name: claude-sonnet-4-6
+    litellm_params:
+      model: openrouter/anthropic/claude-sonnet-4-6
+      api_key: os.environ/OPENROUTER_API_KEY
+      max_tokens: 16384
+
+  - model_name: claude-opus-4-6
+    litellm_params:
+      model: openrouter/anthropic/claude-opus-4-6
+      api_key: os.environ/OPENROUTER_API_KEY
+      max_tokens: 16384
+
+  # ── OpenRouter経由 格安モデル ──
+  - model_name: deepseek
+    litellm_params:
+      model: openrouter/deepseek/deepseek-chat
+      api_key: os.environ/OPENROUTER_API_KEY
+      max_tokens: 8192
+
+  - model_name: glm5
+    litellm_params:
+      model: openrouter/z-ai/glm-5
+      api_key: os.environ/OPENROUTER_API_KEY
+      max_tokens: 8192
+
+  # ── Groq（無料枠あり・超高速） ──
+  - model_name: groq-scout
+    litellm_params:
+      model: groq/meta-llama/llama-4-scout-17b-16e-instruct
+      api_key: os.environ/GROQ_API_KEY
+      max_tokens: 8192
+
+  # ── Ollama ローカルモデル（SDD 専用・無料・M4 MAX最適化） ──
+  - model_name: ollama-qwen25-72b
+    litellm_params:
+      model: ollama/qwen2.5:72b-instruct-q8_0
+      api_base: http://localhost:11434
+      max_tokens: 32768
+
+  - model_name: ollama-deepseek-r1
+    litellm_params:
+      model: ollama/deepseek-r1:70b
+      api_base: http://localhost:11434
+      max_tokens: 32768
+
+  - model_name: ollama-llama33
+    litellm_params:
+      model: ollama/llama3.3:70b
+      api_base: http://localhost:11434
+      max_tokens: 32768
+
+  - model_name: ollama-qwen25-32b
+    litellm_params:
+      model: ollama/qwen2.5:32b
+      api_base: http://localhost:11434
+      max_tokens: 16384
+
 litellm_settings:
   fallbacks:
     - claude-sonnet:
         - claude-haiku
+        - ollama-qwen25-72b
         - ollama-qwen3-coder
     - claude-opus:
         - claude-sonnet
+        - ollama-deepseek-r1
     - claude-haiku:
+        - groq-scout
         - ollama-qwen3-coder
         - openrouter-free
     - gpt53-codex:
         - claude-sonnet
+    - ollama-deepseek-r1:
+        - ollama-qwen25-72b
+        - deepseek
+    - ollama-qwen25-72b:
+        - ollama-qwen25-32b
+        - deepseek
 
   cache: true
   cache_params:
